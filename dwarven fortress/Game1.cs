@@ -33,14 +33,14 @@ namespace Dwarven_fortress
         protected override void Initialize()
         {
             // TODO: Add your initialization logic here
-            TargetElapsedTime = TimeSpan.FromSeconds(1d / 30d);// / 15d);
+            TargetElapsedTime = TimeSpan.FromSeconds(1d / 15d);// / 15d);
             _graphics.IsFullScreen = false;
             _graphics.PreferredBackBufferWidth = _width * (_pixelWidth+1);
             _graphics.PreferredBackBufferHeight = _height * (_pixelWidth+1);
             _graphics.ApplyChanges();
 
             // make list tovist and visted
-            List<int[]> toVisit = new List<int[]>();
+
 
             base.Initialize();
         }
@@ -71,8 +71,10 @@ namespace Dwarven_fortress
             GraphicsDevice.Clear(Color.White);
 
             _spriteBatch.Begin();
-            // TODO: Add your drawing code here
 
+            // TODO: Add your drawing code here
+            List<int[]> toVisit = new List<int[]>();
+            List<int[]> visited = new List<int[]>();
 
             for (int i = 0; i < _width; i++)
             {
@@ -81,7 +83,7 @@ namespace Dwarven_fortress
                     if (i == (_width) / 2 && j == (_height) / 2)
                     {
                         _spriteBatch.Draw(rect, new Rectangle(i * (_pixelWidth + 1), j * (_pixelHeight + 1), _pixelWidth, _pixelHeight), Color.Gray);
-                        // add coords to list tovist
+                        toVisit.Add(new int[] { i * (_pixelWidth + 1), j * (_pixelHeight + 1) });
                     }
                     else
                     {
@@ -91,6 +93,14 @@ namespace Dwarven_fortress
             }
 
             // generate from lists tovist and visited
+
+            int[] coord = toVisit[0];
+            int x = coord[0];
+            int y = coord[1];
+            coord.RemoveAt(0);
+
+            _spriteBatch.Draw(rect, new Rectangle(x , y, _pixelWidth, _pixelHeight), Color.Red);
+            
 
 
             _spriteBatch.End();
