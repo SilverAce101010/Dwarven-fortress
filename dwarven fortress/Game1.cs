@@ -19,13 +19,21 @@ namespace Dwarven_fortress
 
         int[,] grid;
 
-        private int _width = 15;
-        private int _height = 15;
+        private int[] next;
+
+        private int _width = 25;
+        private int _height = 25;
 
         private int _terrainHeight = 5;
 
-        private int _pixelWidth = 25;
-        private int _pixelHeight = 25;
+        private int _pixelWidth = 15;
+        private int _pixelHeight = 15;
+
+        private int red = 0;
+        private int green = 25;
+        private int blue = 0;
+
+        Color terriancolor;
 
         public Game1()
         {
@@ -37,7 +45,7 @@ namespace Dwarven_fortress
         protected override void Initialize()
         {
             // TODO: Add your initialization logic here
-            TargetElapsedTime = TimeSpan.FromSeconds(1d / 30d);// / 15d);
+            TargetElapsedTime = TimeSpan.FromSeconds(1d / 15d);// / 15d);
 
             _graphics.IsFullScreen = false;
             _graphics.PreferredBackBufferWidth = _width * (_pixelWidth+1);
@@ -46,6 +54,10 @@ namespace Dwarven_fortress
 
             toVisit = new List<int[]>();
             visited = new List<int[]>();
+
+            terriancolor = new Color(red, green, blue);
+
+            next = new int[0];
 
             grid = new int[_width, _height];
             toVisit.Add(new int[] { _width / 2, _height / 2 });
@@ -70,6 +82,9 @@ namespace Dwarven_fortress
                 Exit();
 
             // TODO: Add your update logic here
+
+            terriancolor = new Color(red, green * 10, blue);
+
             int[] coord = toVisit[0];
             int x = coord[0];
             int y = coord[1];
@@ -78,17 +93,19 @@ namespace Dwarven_fortress
             toVisit.RemoveAt(0);
             grid[coord[0], coord[1]] = 1;
 
-            toVisit.Add(new int[] { x + 1, y });
-            toVisit.Add(new int[] { x - 1, y });
-            toVisit.Add(new int[] { x, y + 1 });
-
-            int[] next = new int[] { x, y - 1 };
-
-            if (!toVisit.Contains(next) && !visited.Contains(next))
+            if (coord[0] != 1 && coord[1] != 1 && coord[0] != _width && coord[1] != _height)
             {
-                toVisit.Add(next);
+                toVisit.Add(new int[] { x + 1, y });
+                toVisit.Add(new int[] { x - 1, y });
+                toVisit.Add(new int[] { x, y + 1 });
 
+                next = new int[] { x, y - 1 };
+                if (!toVisit.Contains(next) && !visited.Contains(next))
+                {
+                    toVisit.Add(next);
+                }
             }
+            
             // paste copy of rect on each tile
 
             base.Update(gameTime);
@@ -110,8 +127,7 @@ namespace Dwarven_fortress
                 {
                     if (grid[i, j] == 1)
                     {
-                        _spriteBatch.Draw(rect, new Rectangle(i * (_pixelWidth + 1), j * (_pixelHeight + 1), _pixelWidth, _pixelHeight), Color.Gray);
-
+                        _spriteBatch.Draw(rect, new Rectangle(i * (_pixelWidth + 1), j * (_pixelHeight + 1), _pixelWidth, _pixelHeight), terriancolor);
                     }
                     else
                     {
